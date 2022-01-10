@@ -1,52 +1,50 @@
 package test;
 
-import java.io.*;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TimeSeries {
-
-	HashMap<String, ArrayList<Float>> HM= new HashMap <String, ArrayList<Float>>();
+	
+	Map<String, ArrayList<Float>> ts;
+	ArrayList<String> atts;
 	int dataRowSize;
-
-	public int getRowSize() {
-		return dataRowSize;
-	}
-
+	
 	public TimeSeries(String csvFileName) {
-		int i;
-		String line="";
-		BufferedReader lineRead=null;
-		try{
-			lineRead=new BufferedReader(new FileReader(csvFileName));
-			line=lineRead.readLine();
-			String []check=line.split(",");
-			for (String str:check) {
-				HM.put(str, new ArrayList<Float>());//create the new array base on the abcd..
+		ts=new HashMap<>();
+		atts=new ArrayList<>();
+		try {
+			BufferedReader in=new BufferedReader(new FileReader(csvFileName));
+			String line=in.readLine();
+			for(String att : line.split(",")) {
+				atts.add(att);
+				ts.put(att, new ArrayList<>());
 			}
-			while ((line=lineRead.readLine())!=null){
-				String[] row=line.split(",");
-				for ( i=0;i<check.length;i++) {
-					HM.get(check[i]).add(Float.parseFloat(row[i]));//put in every array(abcd) value
+			while((line=in.readLine())!=null) {
+				int i=0;
+				for(String val : line.split(",")) {
+					ts.get(atts.get(i)).add(Float.parseFloat(val));
+					i++;
 				}
 			}
-			dataRowSize=HM.get(String.valueOf((char) 65)).size();
-		}
-		catch (FileNotFoundException e){
-			e.printStackTrace();
-		}
-		catch (IOException e){
-			e.printStackTrace();
-		}
-		finally {
-			try {
-				lineRead.close();
-			}catch (IOException e){
-				e.printStackTrace();
-			}
-		}
+			dataRowSize=ts.get(atts.get(0)).size();
+			
+			in.close();
+		}catch(IOException e) {}
+	}
+	
+	public ArrayList<Float> getAttributeData(String name){
+		return ts.get(name);
+	}
+	
+	public ArrayList<String> getAttributes(){
+		return atts;
+	}
+	
+	public int getRowSize() {
+		return dataRowSize;
 	}
 }

@@ -11,11 +11,11 @@ public class CLI {
 	ArrayList<Command> commands;
 	DefaultIO dio;
 	Commands c;
-	
+
 	public CLI(DefaultIO dio) {
-		this.dio=dio;
-		c=new Commands(dio); 
-		commands=new ArrayList<>();
+		this.dio = dio;
+		c = new Commands(dio);
+		commands = new ArrayList<>();
 		// example: commands.add(c.new ExampleCommand());
 		// implement
 		commands.add(c.new UploadCsvFile());
@@ -23,12 +23,13 @@ public class CLI {
 		commands.add(c.new DetectAnomalies());
 		commands.add(c.new DisplayResults());
 		commands.add(c.new UploadAAResults());
+		commands.add(c.new Exit());
 	}
-	
+
 	public void start() {
-		boolean exit=false;
-		int choice=0;
-		while (!exit){
+		boolean exit = false;
+		int choice = 0;
+		while (choice != 6) {
 			dio.write("Welcome to the Anomaly Detection Server.\n" +
 					"Please choose an option:\n" +
 					"1. upload a time series csv file\n" +
@@ -37,9 +38,7 @@ public class CLI {
 					"4. display results\n" +
 					"5. upload anomalies and analyze results\n" +
 					"6. exit\n");
-			do {
-				choice=(int) dio.readVal();
-			}while (choice>6||choice<1);
+			choice = (int) dio.readVal();
 
 			switch (choice) {
 				case 1:
@@ -58,7 +57,7 @@ public class CLI {
 					commands.get(4).execute();
 					break;
 				case 6:
-					exit=true;
+					commands.get(5).execute();
 					break;
 			}
 		}
